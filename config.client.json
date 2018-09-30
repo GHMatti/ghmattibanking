@@ -1,0 +1,11 @@
+{
+  "locale": "en-US",
+  "currency": "USD",
+
+  "atmsAsBanks": false,
+
+  "displayCashInBankingUI": true,
+
+  "displayDriverCallFeed": "ghmb:setDisplayCash",
+  "displayDriverCallPersistantShow": "ghmb:toggleShowCash"
+}

@@ -1,0 +1,9 @@
+{
+  "mysqlServer": "localhost",
+  "mysqlPort": 3306,
+  "mysqlDatabase": "test",
+  "mysqlUser": "mysqluser",
+  "mysqlPassword": "password",
+
+  "overdrawLimit": 0
+}
