@@ -7,6 +7,7 @@ files {
   -- client
   'config.client.json',
   'locale/en-US.json',
+  'locale/nl-NL.json',
   -- ui
   'ui/index.html',
   'ui/js/app.js',
