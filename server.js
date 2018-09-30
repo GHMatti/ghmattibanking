@@ -46,7 +46,7 @@ object-assign
         inner join ghmb_users usr on acc_cache.user_id = usr.id`,a=>{global.emitNet('ghmb:update-autocomplete-transfer-data',c,a),g.execute(`select acc_cache.id as id, usr.name as text, usr.id as value from ghmb_account_cache acc_cache
         inner join ghmb_users usr on usr.id in (acc_cache.access)
         inner join ghmb_user_cache usr_cache on usr_cache.id = acc_cache.user_id
-        where usr_cache.source = ?`,[c],a=>{global.emitNet('ghmb:update-autocomplete-access-values',c,a);});});});}),global.exports('pay',(h,a,b,c,d)=>{const e=i(h);typeof b==='string'&&typeof c==='string'&&a>0?g.transaction([{query:`update ghmb_accounts acc
+        where usr_cache.source = ?`,[c],a=>{global.emitNet('ghmb:update-autocomplete-access-values',c,a);});});});}),global.exports('pay',(h,a,b,c,d)=>{const e=i(h);typeof c==='string'&&typeof d==='string'&&a>0?g.transaction([{query:`update ghmb_accounts acc
           inner join ghmb_user_cache usr_cache on acc.owner = usr_cache.id
           set balance=if(balance-? >= ?, balance-?, 'No')
           where usr_cache.license = ? and usr_cache.steam = ? and usr_cache.source = ?
@@ -57,10 +57,10 @@ object-assign
             inner join ghmb_user_cache usr_cache on acc.owner = usr_cache.id
             where usr_cache.license = ? and usr_cache.steam = ? and usr_cache.source = ?
             order by acc.bank
-            limit 1`,parameters:[-a,c,b,'reward',e.license,e.steam,h]}],()=>{l=!0;}):a>0&&g.execute(`update ghmb_users usr
+            limit 1`,parameters:[-a,d,c,'reward',e.license,e.steam,h]}],c=>{l=!0,b(c);}):a>0&&g.execute(`update ghmb_users usr
       inner join ghmb_user_cache usr_cache on usr.id = usr_cache.id
       set usr.cash=usr.cash-?
-      where usr_cache.license = ? and usr_cache.steam = ? and usr_cache.source = ?`,[a,e.license,e.steam,h],b=>{l=!0,b&&b.changedRows===1&&d(!0);});}),global.exports('reward',(f,a,b,c)=>{const d=i(f);typeof b==='string'&&typeof c==='string'&&a>0?g.transaction([{query:`update ghmb_accounts acc
+      where usr_cache.license = ? and usr_cache.steam = ? and usr_cache.source = ?`,[a,e.license,e.steam,h],c=>{l=!0,c&&c.changedRows===1?b(!0):b(!1);});}),global.exports('reward',(f,a,b,c)=>{const d=i(f);typeof b==='string'&&typeof c==='string'&&a>0?g.transaction([{query:`update ghmb_accounts acc
           inner join ghmb_user_cache usr_cache on acc.owner = usr_cache.id
           set balance=balance+?
           where usr_cache.license = ? and usr_cache.steam = ? and usr_cache.source = ?
