@@ -49,7 +49,7 @@ module.exports = {
           options: {
             plugins: [
               'minify-mangle-names', 'transform-merge-sibling-variables',
-              'transform-minify-booleans', 'minify-simplify',
+              'transform-minify-booleans',
             ],
             presets: [[
               '@babel/preset-env',
