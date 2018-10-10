@@ -2,7 +2,7 @@
  * Copyright © 2018 Matthias Mandelartz
  * Adapted from ghmattimysql
  */
-const mysql = require('mysql2');
+const mysql = require('mysql');
 const { config } = require('../common/config.js');
 
 const mysqlCfg = {
@@ -40,7 +40,8 @@ function safeInvoke(callback, args) {
 function execute(sql, params, connection) {
   const orm = connection || pool;
   return new Promise((resolve, reject) => {
-    orm[(params.length) ? 'execute' : 'query'](sql, params, (error, result) => {
+    // orm[(params.length) ? 'execute' : 'query'](sql, params, (error, result) => {
+    orm.query(sql, params, (error, result) => {
       if (error) reject(error);
       resolve(result);
     });

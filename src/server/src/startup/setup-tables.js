@@ -53,42 +53,9 @@ const accessTable = `
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 `;
 
-const tmpUserTable = `
-    CREATE TABLE IF NOT EXISTS ghmb_user_cache (
-      id BIGINT UNSIGNED NOT NULL,
-      name VARCHAR(100) NOT NULL,
-      license VARCHAR(255) NOT NULL,
-      steam VARCHAR(255) DEFAULT NULL,
-      cash INT(11) UNSIGNED DEFAULT 0,
-      bank INT(11) SIGNED DEFAULT 0,
-      source VARCHAR(255) NOT NULL,
-      PRIMARY KEY(id),
-      CONSTRAINT tmp_ident_unique UNIQUE (license, steam, source)
-    ) DEFAULT CHARSET=utf8mb4;
-`;
-
-const tmpAccountTable = `
-    CREATE TABLE IF NOT EXISTS ghmb_account_cache (
-      id BIGINT UNSIGNED NOT NULL,
-      user_id BIGINT UNSIGNED NOT NULL,
-      accountname VARCHAR(60) NOT NULL,
-      accountnumber VARCHAR(16) NOT NULL,
-      bank VARCHAR(20) NOT NULL,
-      balance INT(11) DEFAULT 0,
-      changed_at TIMESTAMP NOT NULL,
-      owner VARCHAR(100) NOT NULL,
-      access VARCHAR(255) DEFAULT NULL,
-      PRIMARY KEY(id),
-      CONSTRAINT tmp_accountnumber_unique UNIQUE (accountnumber),
-      INDEX tmp_userident (user_id, access)
-    ) DEFAULT CHARSET=utf8mb4;
-`;
-
 module.exports = {
   userTable,
   accountTable,
   transactionTable,
   accessTable,
-  tmpUserTable,
-  tmpAccountTable,
 };

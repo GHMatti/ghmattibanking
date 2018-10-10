@@ -27,5 +27,6 @@
   "purpose": "Purpose",
   "transferamount": "Transfer Amount",
   "transfertarget": "Transfer To",
-  "back": "Back"
+  "back": "Back",
+  "openmenu": "Press ~INPUT_CONTEXT~ to open the banking menu"
 }

@@ -12,7 +12,6 @@ const global = window;
 const config = JSON.parse(global.LoadResourceFile('ghmattibanking', 'config.client.json'));
 let isAllowed = false;
 let myUserName = '';
-let bankCache = 0;
 let bankChanged = true;
 
 const locale = JSON.parse(global.LoadResourceFile('ghmattibanking', `locale/${config.locale}.json`));
@@ -22,6 +21,7 @@ global.on('onClientResourceStart', (name) => {
   }
 });
 
+// Default display drivers, outsource at some point
 global.on('ghmb:setDisplayCash', (cash, bank) => {
   global.StatSetInt('MP0_WALLET_BALANCE', cash, true);
   global.StatSetInt('BANK_BALANCE', bank, true);
@@ -36,7 +36,6 @@ global.on('ghmb:toggleShowCash', (show) => {
   } else {
     global.N_0x95cf81bd06ee1887();
     global.RemoveMultiplayerHudCash();
-    // or let it take its course naturally?
     global.HideHudComponentThisFrame(3);
     global.HideHudComponentThisFrame(4);
   }
@@ -44,7 +43,6 @@ global.on('ghmb:toggleShowCash', (show) => {
 
 const showCashPersist = config.displayDriverCallPersistantShow;
 const setDisplayCash = config.displayDriverCallFeed;
-
 
 // lazily update player ped id and player id
 let player = new Player();
@@ -57,19 +55,17 @@ function getPositionString() {
   return `${streetName} - ${areaName}`;
 }
 
-// ping every 1.5s
-setInterval(() => {
-  global.emitNet('ghmb:ping');
-}, 1500);
+// caching server information
+let [displayCash, displayBank] = [0, 0];
+global.onNet('ghmb:set-cash', (cash) => {
+  displayCash = cash;
+  global.emit(setDisplayCash, displayCash, displayBank);
+});
 
-// recieve a answer to our ping with the current amount of cash
-global.onNet('ghmb:set-money', (money) => {
-  const [cash, bank] = money;
-  if (bankCache !== bank) {
-    bankChanged = true;
-    bankCache = bank;
-  }
-  global.emit(setDisplayCash, cash, bank);
+global.onNet('ghmb:set-bank', (bank) => {
+  displayBank = bank;
+  bankChanged = true;
+  global.emit(setDisplayCash, displayCash, displayBank);
 });
 
 // Toggle function to open the Ui
@@ -235,10 +231,14 @@ NuiCallback('withdraw-from-account', (data) => {
   global.emitNet('ghmb:request-withdrawal', myUserName, payload);
 });
 
+NuiCallback('request-transactions', (data) => {
+  global.emitNet('ghmb:request-transactions', data.id, data.limit, data.offset);
+});
+
 global.onNet('ghmb:update-autocomplete-access-data', (acAccess) => {
   const autocompleteAccessData = [];
   acAccess.forEach((el) => {
-    autocompleteAccessData.push({ text: el.name, value: el.id });
+    autocompleteAccessData.push({ name: el.name, id: el.id });
   });
   NuiMessage({ type: 'setAutocompleteAccessData', data: autocompleteAccessData });
 });
@@ -251,10 +251,6 @@ NuiCallback('transfer-from-account', (data) => {
   global.emitNet('ghmb:request-transfer', myUserName, data);
 });
 
-global.onNet('ghmb:update-autocomplete-access-values', (acAccess) => {
-  NuiMessage({ type: 'setAutocompleteAccessValues', data: acAccess });
-});
-
 NuiCallback('edit-account', (data) => {
   if (data.nameIs !== data.nameRequest) {
     global.emitNet('ghmb:change-account-name', myUserName, data.accountId, data.nameRequest);
@@ -265,10 +261,10 @@ NuiCallback('edit-account', (data) => {
   const add = [];
   const remove = [];
   data.accessRequest.forEach((el) => {
-    if (data.accessIs.findIndex(usr => usr.value === el.value) === -1) add.push(el);
+    if (data.accessIs.findIndex(usr => usr.id === el.id) === -1) add.push(el);
   });
   data.accessIs.forEach((el) => {
-    if (data.accessRequest.findIndex(usr => usr.value === el.value) === -1) remove.push(el);
+    if (data.accessRequest.findIndex(usr => usr.id === el.id) === -1) remove.push(el);
   });
   if (add.length > 0 || remove.length > 0) {
     global.emitNet('ghmb:change-access', data.accountId, add, remove);

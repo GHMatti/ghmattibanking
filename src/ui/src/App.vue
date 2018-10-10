@@ -46,7 +46,7 @@ export default {
     ...mapMutations([
       'setDate', 'setLocation', 'setBankState', 'setUser',
       'setAutocompleteAccessData', 'setAutocompleteTransferData',
-      'setAutocompleteAccessValues', 'setConfig',
+      'setConfig',
     ]),
     ...mapActions(['updateAccountData', 'updateTransactionData']),
   },

@@ -26,8 +26,8 @@ module.exports = {
           loader: 'babel-loader',
           options: {
             plugins: [
-              ['minify-mangle-names', { topLevel: true }], 'transform-merge-sibling-variables',
-              'transform-minify-booleans', 'minify-simplify',
+              // ['minify-mangle-names', { topLevel: true }], 'transform-merge-sibling-variables',
+              // 'transform-minify-booleans', 'minify-simplify',
             ],
             presets: [[
               '@babel/preset-env',
@@ -49,7 +49,7 @@ module.exports = {
           options: {
             plugins: [
               'minify-mangle-names', 'transform-merge-sibling-variables',
-              'transform-minify-booleans', 'minify-simplify',
+              'transform-minify-booleans',
             ],
             presets: [[
               '@babel/preset-env',

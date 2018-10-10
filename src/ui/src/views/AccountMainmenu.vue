@@ -97,7 +97,7 @@
 </template>
 
 <script>
-import { mapState, mapMutations } from 'vuex';
+import { mapState, mapMutations, mapActions } from 'vuex';
 import BankInformation from '../components/BankInformation.vue';
 import BankTransactions from '../components/BankTransactions.vue';
 
@@ -141,6 +141,7 @@ export default {
   },
   methods: {
     ...mapMutations(['setDisplay']),
+    ...mapActions(['requestTransactions']),
     deposit() {
       if (this.validDeposit) {
         this.depositDialog = false;
@@ -152,6 +153,7 @@ export default {
           }),
         });
         this.depositAmount = null;
+        this.delayedRequestTransactions();
       }
     },
     withdraw() {
@@ -165,6 +167,7 @@ export default {
           }),
         });
         this.withdrawAmount = null;
+        this.delayedRequestTransactions();
       }
     },
     transfer() {
@@ -180,12 +183,33 @@ export default {
           }),
         });
         this.transferAmount = '0';
+        this.delayedRequestTransactions();
       }
     },
     localize(s) {
       return this.i18n[s];
     },
+    delayedRequestTransactions() {
+      setTimeout(() => {
+          this.requestTransactions(
+            {
+              id: this.accounts[this.currentAccount].id,
+              limit: 7,
+              offset: 0,
+            }
+          );
+        }, 100);
+    },
   },
+  mounted() {
+    this.requestTransactions(
+      {
+        id: this.accounts[this.currentAccount].id,
+        limit: 7,
+        offset: 0,
+      }
+    );
+  }
 };
 </script>
 

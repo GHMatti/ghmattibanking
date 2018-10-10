@@ -62,7 +62,7 @@
           :label="localize('accountname')">
         </v-text-field>
         <v-combobox :class="bankName" :label="localize('access')" multiple chips deletable-chips
-          item-text="text" item-value="value" :items="autocompleteAccess"
+          item-text="name" item-value="id" :items="autocompleteAccess"
           v-model="editAccountAccess">
         </v-combobox>
       </v-form></v-card-text>
@@ -88,7 +88,7 @@ export default {
     BankInformation,
   },
   computed: {
-    ...mapState(['bankName', 'accounts', 'currentAccount', 'caName', 'caBank', 'autocompleteAccess', 'autocompleteAccessValues', 'isAtm', 'i18n']),
+    ...mapState(['bankName', 'accounts', 'currentAccount', 'caName', 'caBank', 'autocompleteAccess', 'isAtm', 'i18n']),
   },
   data() {
     return {
@@ -124,32 +124,20 @@ export default {
     },
     editAccount() {
       this.editAccountDialog = false;
-      const currentAccess = []
-      this.autocompleteAccessValues.forEach((el) => {
-        if(el.id === this.accounts[this.currentAccount].id) {
-          currentAccess.push(el);
-        }
-      });
       fetch('http://ghmattibanking/edit-account', {
         method: 'post',
         body: JSON.stringify({
           nameRequest: this.editAccountName,
           nameIs: this.caName,
           accessRequest: this.editAccountAccess,
-          accessIs: currentAccess,
+          accessIs: this.accounts[this.currentAccount].access,
           accountId: this.accounts[this.currentAccount].id,
         }),
       });
     },
     openEditAccount() {
       this.editAccountName = this.caName;
-      const currentAccess = []
-      this.autocompleteAccessValues.forEach((el) => {
-        if(el.id === this.accounts[this.currentAccount].id) {
-          currentAccess.push(el);
-        }
-      });
-      this.editAccountAccess = currentAccess;
+      this.editAccountAccess = this.accounts[this.currentAccount].access;
       this.editAccountDialog = true;
     },
     localize(s) {

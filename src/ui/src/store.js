@@ -96,20 +96,17 @@ export default new Vuex.Store({
       });
     },
     updateTransactionData(_, payload) {
-      payload.transactions.forEach((transaction) => {
-        // find proper account id in accounts
-        const index = this.state.accounts.findIndex(acc => acc.id === transaction.account);
-        if (index > -1) this.state.accounts[index].transactions.push(transaction);
-      });
+      const index = this.state.accounts.findIndex(acc => acc.id === payload
+        .transactions[0].account);
+      if (index > -1) {
+        this.state.accounts[index].transactions = payload.transactions;
+      }
     },
     removeAccount(_, payload) {
       this.state.accounts = this.state.accounts.filter(acc => payload.id !== acc.id);
     },
     setAutocompleteAccessData(_, payload) {
       this.state.autocompleteAccess = payload.data;
-    },
-    setAutocompleteAccessValues(_, payload) {
-      this.state.autocompleteAccessValues = payload.data;
     },
     setAutocompleteTransferData(_, payload) {
       this.state.autocompleteTransfer = payload.data;
@@ -132,6 +129,16 @@ export default new Vuex.Store({
     updateTransactionData({ commit }, payload) {
       commit('updateTransactionData', payload);
       commit('updateCATransactions');
+    },
+    requestTransactions(_, payload) {
+      fetch('http://ghmattibanking/request-transactions', {
+        method: 'post',
+        body: JSON.stringify({
+          id: payload.id,
+          limit: payload.limit,
+          offset: payload.offset,
+        }),
+      });
     },
   },
 });

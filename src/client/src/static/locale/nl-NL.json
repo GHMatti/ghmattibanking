@@ -27,5 +27,6 @@
   "purpose": "Doel",
   "transferamount": "Overboek Waarde",
   "transfertarget": "Overboeken Naar",
-  "back": "Terug"
+  "back": "Terug",
+  "openmenu": "druk op ~INPUT_CONTEXT~ om het bankmenu te openen"
 }
