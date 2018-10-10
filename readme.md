@@ -9,7 +9,7 @@ Read the [license](https://github.com/GHMatti/ghmattibanking/blob/master/license
 
 ## Resources
 * [wiki](https://github.com/GHMatti/ghmattibanking/wiki)
-* [FiveM Forum Topic]()
+* [FiveM Forum Topic](https://forum.fivem.net/t/ghmattibanking/163876)
 
 ## Features
 * A fully operational cash / banking system that should be able to merge into any system you like.
