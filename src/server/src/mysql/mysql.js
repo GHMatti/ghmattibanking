@@ -40,7 +40,6 @@ function safeInvoke(callback, args) {
 function execute(sql, params, connection) {
   const orm = connection || pool;
   return new Promise((resolve, reject) => {
-    // orm[(params.length) ? 'execute' : 'query'](sql, params, (error, result) => {
     orm.query(sql, params, (error, result) => {
       if (error) reject(error);
       resolve(result);
