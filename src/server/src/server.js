@@ -80,7 +80,7 @@ global.exports('pay', (src, amount, callback, recipient, purpose) => {
 
       const reduce = accounts.reduce((p, _, i) => p.then(() => new Promise((res) => {
         if (!paid) {
-          accounts[i].pay(amount, purpose, recipient, userCache, (success) => {
+          accounts[i].pay(amount, purpose, recipient, userCache, false, (success) => {
             paid = success;
             res(paid);
           });
@@ -100,6 +100,31 @@ global.exports('pay', (src, amount, callback, recipient, purpose) => {
       });
     } else callback(paid);
   });
+});
+
+global.exports('fine', (src, amount, recipient, purpose, callback) => {
+  const { id, cash } = userCache.findUser(src);
+  const accounts = accountCache.findOwnedAccounts(id);
+  // find account
+  let maxIndex = 0;
+  let maxValue = (accounts.length > 0) ? accounts[0].balance : 0;
+  accounts.forEach((acc, idx) => {
+    if (acc.balance > maxValue) {
+      maxIndex = idx;
+      maxValue = acc.balance;
+    }
+  });
+  if (maxValue > 0) { // just fine account
+    accounts[maxIndex].pay(amount, purpose, recipient, userCache, true);
+    if (typeof callback === 'function') callback(0);
+  } else { // remove cash first
+    const remainingAmount = amount - cash;
+    userCache.findUser(src).payCash(cash);
+    if (accounts.length > 0) {
+      accounts[maxIndex].pay(remainingAmount, purpose, recipient, userCache, true);
+      if (typeof callback === 'function') callback(0);
+    } else if (typeof callback === 'function') callback(remainingAmount);
+  }
 });
 
 global.exports('reward', (src, amount, from, purpose) => {
