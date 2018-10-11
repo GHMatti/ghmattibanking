@@ -119,8 +119,9 @@ global.exports('fine', (src, amount, recipient, purpose, callback) => {
     if (typeof callback === 'function') callback(0);
   } else { // remove cash first
     const remainingAmount = amount - cash;
-    userCache.findUser(src).payCash(cash);
-    if (accounts.length > 0) {
+    const payAmount = (cash - amount > 0) ? cash - amount : cash;
+    userCache.findUser(src).payCash(payAmount);
+    if (accounts.length > 0 && remainingAmount > 0) {
       accounts[maxIndex].pay(remainingAmount, purpose, recipient, userCache, true);
       if (typeof callback === 'function') callback(0);
     } else if (typeof callback === 'function') callback(remainingAmount);
@@ -186,4 +187,10 @@ global.RegisterCommand('payTest', (src) => {
   global.exports.ghmattibanking.pay(src, 1500, (res) => {
     console.log(`Shopping successful: ${res}`);
   }, 'Ponsonbys', 'Shopping');
-}, false); */
+}, false);
+
+global.RegisterCommand('fineTest', (src) => {
+  global.exports.ghmattibanking.fine(src, 30000, 'LSPD', 'Traffic Ticket', (res) => {
+    console.log(`Fine successful: ${res}`);
+  });
+}, false); /* */
