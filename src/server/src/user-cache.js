@@ -10,6 +10,7 @@ class UserCache {
 
   add(username, src) {
     const idents = getPlayerIdentifiers(src);
+    this.remove(src);
     User.Load(username, idents.license, idents.steam, src, (user) => {
       user.on('cashChange', (s, cash) => {
         global.emitNet('ghmb:set-cash', s, cash);
