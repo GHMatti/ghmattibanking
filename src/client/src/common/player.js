@@ -12,7 +12,7 @@ class Player {
   }
 
   getLocation() {
-    return global.GetEntityCoords(this.pedId, this.isDead());
+    return global.GetEntityCoords(this.pedId, !this.isDead());
   }
 
   getHeading() {
