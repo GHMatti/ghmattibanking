@@ -40,20 +40,20 @@ global.on('playerDropped', () => {
   userCache.remove(src);
 });
 
-global.onNet('ghmb:request-new-account', (username, accountname, bankname) => {
+global.onNet('ghmb:request-new-account', (accountname, bankname) => {
   const src = global.source;
   accountCache
     .createAccount(accountname, bankname, src, userCache);
 });
 
-global.onNet('ghmb:request-deposit', (username, payload) => {
+global.onNet('ghmb:request-deposit', (payload) => {
   const src = global.source;
   accountCache
     .findAccounts([payload.account])[0]
     .deposit(payload.amount, payload.purpose, src, userCache);
 });
 
-global.onNet('ghmb:request-withdrawal', (username, payload) => {
+global.onNet('ghmb:request-withdrawal', (payload) => {
   const src = global.source;
   accountCache
     .findAccounts([payload.account])[0]
@@ -147,7 +147,7 @@ global.exports('reward', (src, amount, from, purpose) => {
   });
 });
 
-global.onNet('ghmb:request-transfer', (username, payload) => {
+global.onNet('ghmb:request-transfer', (payload) => {
   const src = global.source;
   const destination = (typeof payload.to === 'string') ? payload.to : payload.to.accountnumber;
   accountCache
@@ -155,7 +155,7 @@ global.onNet('ghmb:request-transfer', (username, payload) => {
     .transfer(payload.amount, destination, payload.purpose, src, userCache, accountCache);
 });
 
-global.onNet('ghmb:change-account-name', (username, accId, accName) => {
+global.onNet('ghmb:change-account-name', (accId, accName) => {
   const src = global.source;
   const { id } = userCache.findUser(src);
   accountCache

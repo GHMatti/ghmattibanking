@@ -216,19 +216,19 @@ global.setInterval(() => {
 }, 300);
 
 NuiCallback('new-account', (accountName) => {
-  global.emitNet('ghmb:request-new-account', myUserName, accountName, nearestBankName);
+  global.emitNet('ghmb:request-new-account', accountName, nearestBankName);
 });
 
 NuiCallback('deposit-on-account', (data) => {
   const payload = data;
   payload.purpose = `Deposited on ${getPositionString()}`;
-  global.emitNet('ghmb:request-deposit', myUserName, payload);
+  global.emitNet('ghmb:request-deposit', payload);
 });
 
 NuiCallback('withdraw-from-account', (data) => {
   const payload = data;
   payload.purpose = `Withdrawn on ${getPositionString()}`;
-  global.emitNet('ghmb:request-withdrawal', myUserName, payload);
+  global.emitNet('ghmb:request-withdrawal', payload);
 });
 
 NuiCallback('request-transactions', (data) => {
@@ -248,12 +248,12 @@ global.onNet('ghmb:update-autocomplete-transfer-data', (acTransfer) => {
 });
 
 NuiCallback('transfer-from-account', (data) => {
-  global.emitNet('ghmb:request-transfer', myUserName, data);
+  global.emitNet('ghmb:request-transfer', data);
 });
 
 NuiCallback('edit-account', (data) => {
   if (data.nameIs !== data.nameRequest) {
-    global.emitNet('ghmb:change-account-name', myUserName, data.accountId, data.nameRequest);
+    global.emitNet('ghmb:change-account-name', data.accountId, data.nameRequest);
   }
   data.accessRequest.forEach((el, index) => {
     if (typeof el === 'string') data.accessRequest.splice(index, 1);
