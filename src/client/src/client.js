@@ -202,7 +202,7 @@ setInterval(() => {
 global.setTick(() => {
   if (listenForContextPress) {
     global.BeginTextCommandDisplayHelp('STRING');
-    global.AddTextComponentSubstringPlayerName('Press ~INPUT_CONTEXT~ to open the banking menu');
+    global.AddTextComponentSubstringPlayerName(locale.openmenu);
     global.EndTextCommandDisplayHelp(0, 0, 0, -1);
     if (global.IsControlJustReleased(0, 51)) openBankUi(nearestBankName, nearestBankIsAtm);
   }
