@@ -145,8 +145,8 @@ class Account {
     });
   }
 
-  pay(amount, purpose, recipient, userCache, cb) {
-    if (this.balance > amount + config.overdrawLimit) {
+  pay(amount, purpose, recipient, userCache, ignoreOverDrawLimit, cb) {
+    if (this.balance >= amount + config.overdrawLimit || ignoreOverDrawLimit) {
       mysql.transaction([
         {
           query: `update ghmb_accounts set balance=balance-?

@@ -73,7 +73,7 @@ class User extends EventEmitter {
   }
 
   payCash(amount, cb) {
-    if (this.cash > amount) {
+    if (this.cash >= amount) {
       mysql.execute('update ghmb_users set cash=cash-? where id = ?', [amount, this.id], (result) => {
         if (result.changedRows === 1) {
           this.cash -= amount;
