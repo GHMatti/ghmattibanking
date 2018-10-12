@@ -16,6 +16,7 @@ export default new Vuex.Store({
     config: {
       locale: 'en-US',
       currency: 'USD',
+      maxNumberOfAccounts: 3,
     },
     // functionality
     display: 'account-select',

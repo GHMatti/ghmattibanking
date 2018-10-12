@@ -2,6 +2,8 @@
   "locale": "en-US",
   "currency": "USD",
 
+  "maxNumberOfAccounts": 3,
+
   "atmsAsBanks": false,
 
   "displayCashInBankingUI": true,
