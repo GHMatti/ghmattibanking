@@ -88,13 +88,7 @@ export default new Vuex.Store({
       this.state.user = payload.user;
     },
     updateAccountData(_, payload) {
-      payload.accounts.forEach((currentAccount) => {
-        const account = currentAccount;
-        const index = this.state.accounts.findIndex(acc => acc.id === account.id);
-        account.transactions = [];
-        if (index > -1) this.state.accounts[index] = account;
-        else this.state.accounts.push(account);
-      });
+      this.state.accounts = payload.accounts;
     },
     updateTransactionData(_, payload) {
       const index = this.state.accounts.findIndex(acc => acc.id === payload
