@@ -21,11 +21,11 @@
       </v-flex>
       <v-flex xs12 text-xs-center py-3>
         <v-btn :class="bankName" @click="openEditAccount"
-          :disabled="isAtm || bankName != caBank || accounts.length < 1">{{ localize('editaccount') }}</v-btn>
+          :disabled="isAtm || bankName != caBank || accounts.length < 1 || user != caOwner">{{ localize('editaccount') }}</v-btn>
       </v-flex>
       <v-flex xs12 text-xs-center py-3>
         <v-btn :class="bankName" @click="newAccountDialog = true"
-          :disabled="isAtm">{{ localize('newaccount') }}</v-btn>
+          :disabled="isAtm || ownedAccounts >= config.maxNumberOfAccounts">{{ localize('newaccount') }}</v-btn>
       </v-flex>
       <v-flex xs12 text-xs-center py-3>
         <v-btn :class="bankName" @click="closeApp">{{ localize('exitapp') }}</v-btn>
@@ -88,7 +88,18 @@ export default {
     BankInformation,
   },
   computed: {
-    ...mapState(['bankName', 'accounts', 'currentAccount', 'caName', 'caBank', 'autocompleteAccess', 'isAtm', 'i18n']),
+    ...mapState([
+      'bankName', 'accounts', 'currentAccount','caName',
+      'caBank', 'caOwner', 'autocompleteAccess', 'isAtm',
+      'i18n', 'user', 'config',
+    ]),
+    ownedAccounts() {
+      let ownedAccounts = 0;
+      this.accounts.forEach((acc) => {
+        if (acc.owner == this.user) ownedAccounts += 1;
+      });
+      return ownedAccounts;
+    }
   },
   data() {
     return {
