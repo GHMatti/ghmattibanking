@@ -163,6 +163,10 @@ button {
   min-width: 165px!important;
 }
 
+button.table-chevron {
+  min-width: 0px!important;
+}
+
 button.fleeca {
   color: #ffffff!important;
   background-color: #268f3a!important;

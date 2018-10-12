@@ -1,17 +1,34 @@
 <template>
-  <table v-bind:class="bankName" v-if="caTransactions.length">
+  <table :class="bankName">
     <tr>
       <th class="date">{{ localize('date') }}</th>
       <th class="text">{{ localize('description') }}</th>
       <th class="amount">{{ localize('amount') }}</th>
     </tr>
-    <tr v-for="(transaction, index) in caTransactions" v-bind:key="index">
+    <tr v-for="(transaction, index) in caTransactions" :key="index">
       <td class="date">{{ formatDate(transaction.issued_at) }}</td>
       <td class="text"><b>{{ transaction.origin }}</b><br />{{ transaction.purpose }}</td>
       <td class="amount">{{ formatCurrency(transaction.amount) }}</td>
     </tr>
     <tr>
-      <td></td>
+      <td>
+        <div style="display: inline-flex;">
+          <v-btn icon small class="table-chevron"
+            :dark="bankName === 'maze-bank'"
+            :light="bankName === 'maze-bank'"
+            :disabled="caTransactions.length < 7 || debounce"
+            @click="getTransactions(-1)">
+            <v-icon>chevron_left</v-icon>
+          </v-btn>
+          <v-btn icon small class="table-chevron"
+            :dark="bankName === 'maze-bank'"
+            :light="bankName === 'maze-bank'"
+            :disabled="offset === 0 || debounce"
+            @click="getTransactions(1)">
+            <v-icon>chevron_right</v-icon>
+          </v-btn>
+        </div>
+      </td>
       <td class="text">{{ localize('currentbalance') }}</td>
       <td class="amount">{{ formatCurrency(caBalance) }}</td>
     </tr>
@@ -19,12 +36,19 @@
 </template>
 
 <script>
-import { mapState } from 'vuex';
+import { mapState, mapActions } from 'vuex';
 
 export default {
   name: 'account-transaction-table',
-  computed: mapState(['caTransactions', 'caBalance', 'user', 'bankName', 'config', 'i18n']),
+  computed: mapState(['caTransactions', 'accounts', 'currentAccount', 'caBalance', 'user', 'bankName', 'config', 'i18n']),
+  data() {
+    return {
+      offset: 0,
+      debounce: false,
+    };
+  },
   methods: {
+    ...mapActions(['requestTransactions']),
     formatCurrency(d) {
       return d.toLocaleString(this.config.locale, {
         currency: this.config.currency,
@@ -40,6 +64,19 @@ export default {
     localize(s) {
       return this.i18n[s];
     },
+    getTransactions(m) {
+      this.debounce = true;
+      this.offset -= m*7;
+      this.requestTransactions({
+        id: this.accounts[this.currentAccount].id,
+        limit: 7,
+        offset: this.offset,
+      });
+      setTimeout(() => { this.debounce = false; }, 250);
+    },
+  },
+  mounted() {
+    this.offset = 0;
   },
 };
 </script>
@@ -47,7 +84,7 @@ export default {
 <style scoped>
 table {
   border-collapse: collapse;
-  width: 70%;
+  width: 100%;
   margin: auto;
 }
 
@@ -59,7 +96,7 @@ table.lombank th {
   color: #ffffff;
   background-color: #000000;
   font-weight: bold;
-  padding: 8px 16px;
+  padding: 12px 16px;
 }
 table.lombank td {
   padding: 2px 16px;
@@ -119,12 +156,12 @@ table.maze-bank {
 table.maze-bank th {
   line-height: 1.2;
   font-weight: bold;
-  padding: 8px 16px;
+  padding: 14px 16px;
   color: #ffffff;
   background-color: #e10a0a;
 }
 table.maze-bank td {
-  padding: 2px 16px;
+  padding: 6px 16px;
   line-height: 1.2;
 }
 table.maze-bank tr:nth-child(even) {
@@ -133,6 +170,7 @@ table.maze-bank tr:nth-child(even) {
 table.maze-bank tr:last-child td {
   border: none;
   font-weight: bold;
+  padding: 2px 16px!important;
 }
 table.maze-bank tr:last-child {
   background-color: #e10a0a;
